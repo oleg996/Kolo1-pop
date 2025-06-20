@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Tutorial9.Services;
 using Tutorial9.DTO;
+using Microsoft.AspNetCore.Http.HttpResults;
 namespace Tutorial9.Controllers
 {
 
@@ -45,9 +46,15 @@ namespace Tutorial9.Controllers
             if (!await _dbservice.DoesInstitutionExists(progect.artifact.institutionId))
                 return BadRequest("institution with such id not exists");
 
-
-            await _dbservice.AddProgect(progect);
-            return Ok(progect);
+            try
+            {
+                await _dbservice.AddProgect(progect);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+            return Created();
         }
 
 
